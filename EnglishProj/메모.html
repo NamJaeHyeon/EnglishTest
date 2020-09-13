@@ -37,7 +37,28 @@ myHeaders.append('Content-Type','text/plain; charset=UTF-8');
             
             fetch('lesson1',myHeaders).then(function (response) {
                 response.text().then(function (text) {
-                    console.log(text);
+                    var a = text.split("\n");
+                    var engtext = [];
+                    var kortext = [];
+                    for(var i = 0; i<a.length/3; i++){
+                        engtext.append(a[i*3]);
+                        kortext.append(a[i*3+1]);
+                    }
+                    var engword1 = '<div class="quiz-word" onclick="wordClicked(';
+                    var engword2 = ')">';
+                    var engword3 = '</div>';
+                    var content1_1 = '<div class="quiz-content1">';
+                    var content1_2 = '</div>';
+                    var content2_1 = '<div class="quiz-content2">(';
+                    var content2_2 = ')</div>';
+                    var answer1 = '<div class=".quiz-answer"><input type="text" size="80"></div>';
+                    for(var i=0; i<engtext.length; i++){
+                        var khtml = '';
+                        var engword = engtext[i].split(' ');
+                        for(var j=0; j<engword.length; j++){
+                            khtml += 
+                        }
+                        document.querySelectorAll()
                 })
             });
 

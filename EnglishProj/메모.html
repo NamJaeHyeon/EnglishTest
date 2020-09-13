@@ -1,0 +1,74 @@
+﻿<!doctype html>
+<html lang="ko">
+    <head>
+        <meta http-equiv="content-type" content="text/html charset = utf-8">
+        <title>영어 1과</title>
+        <style>
+            body{
+                background-color: #b5b5b5;
+            }
+            .content{
+                background-color: white;
+                margin: 2%;
+                margin-top: 2%;
+                padding: 3%;
+                border-bottom-left-radius: 5px;
+                border-bottom-right-radius: 5px;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+            .title{
+                font-size: 30px;
+                margin-bottom: 40px;
+            }
+            .quiz{
+                padding: 10px;
+            }
+            .quiz-word{
+                display: inline;
+            }
+            .quiz-word:hover{
+                background-color: gray;
+            }
+        </style>
+        <script>
+            fetch('lesson1').then(function (response) {
+                response.text().then(function (text) {
+                    console.log(text);
+                })
+            });
+
+            function wordClicked(a) {
+                if (document.querySelectorAll(".quiz-word")[a].style.backgroundColor == "") {
+                    document.querySelectorAll(".quiz-word")[a].style.backgroundColor = "rgb(255, 255, 255)";
+                }
+                if (document.querySelectorAll(".quiz-word")[a].style.backgroundColor == "rgb(255, 255, 255)") {
+                    document.querySelectorAll(".quiz-word")[a].style.backgroundColor = "rgb(70, 70, 70)";
+                } else {
+                    document.querySelectorAll(".quiz-word")[a].style.backgroundColor = "rgb(255, 255, 255)";
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="content">
+            <div class="title">
+                1과
+            </div>
+            <div class="quiz" id="q1">
+                <div class="quiz-content1">
+                    1. blablabla...
+                </div>
+                <div class="quiz-content2">
+                    (
+                    <div class="quiz-word" onclick="wordClicked(0)">hello,</div>
+                    <div class="quiz-word" onclick="wordClicked(1)">world!</div>
+                    )
+                </div>
+                <div class=".quiz-answer">
+                    <input type="text" size="80">
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

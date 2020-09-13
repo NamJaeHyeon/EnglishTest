@@ -32,7 +32,10 @@
             }
         </style>
         <script>
-            fetch('lesson1').then(function (response) {
+            var myHeaders = new Headers();
+myHeaders.append('Content-Type','text/plain; charset=UTF-8');
+            
+            fetch('lesson1',myHeaders).then(function (response) {
                 response.text().then(function (text) {
                     console.log(text);
                 })

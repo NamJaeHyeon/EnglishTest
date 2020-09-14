@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ko">
     <head>
         <meta http-equiv="content-type" content="text/html charset = utf-8">
@@ -18,11 +18,13 @@
                 border-top-right-radius: 5px;
             }
             .title{
-                font-size: 30px;
-                margin-bottom: 40px;
+                font-size: 50px;
+                margin: 40px;
+                font-weight: bold;
             }
             .quiz{
                 padding: 10px;
+                margin: 10px;
             }
             .quiz-word{
                 display: inline;
@@ -32,47 +34,60 @@
             }
         </style>
         <script>
-            var myHeaders = new Headers();
-myHeaders.append('Content-Type','text/plain; charset=UTF-8');
-            
-            fetch('lesson1',myHeaders).then(function (response) {
-                response.text().then(function (text) {
-                    var a = text.split("\n");
-                    var engtext = [];
-                    var kortext = [];
-                    for(var i = 0; i<a.length/3; i++){
-                        engtext.append(a[i*3]);
-                        kortext.append(a[i*3+1]);
-                    }
-                    var engword1 = '<div class="quiz-word" onclick="wordClicked(';
-                    var engword2 = ')">';
-                    var engword3 = '</div>';
-                    var content1_1 = '<div class="quiz-content1">';
-                    var content1_2 = '</div>';
-                    var content2_1 = '<div class="quiz-content2">(';
-                    var content2_2 = ')</div>';
-                    var answer1 = '<div class=".quiz-answer"><input type="text" size="80"></div>';
-                    for(var i=0; i<engtext.length; i++){
-                        var khtml = '';
-                        var engword = engtext[i].split(' ');
-                        for(var j=0; j<engword.length; j++){
-                            khtml += 
-                        }
-                        document.querySelectorAll()
-                    }
-                })
-            });
-
-            function wordClicked(a) {
-                if (document.querySelectorAll(".quiz-word")[a].style.backgroundColor == "") {
-                    document.querySelectorAll(".quiz-word")[a].style.backgroundColor = "rgb(255, 255, 255)";
+            function shuffle(a) {
+                var j, x, i;
+                for (i = a.length; i; i -= 1) {
+                    j = Math.floor(Math.random() * i);
+                    x = a[i - 1];
+                    a[i - 1] = a[j];
+                    a[j] = x;
                 }
-                if (document.querySelectorAll(".quiz-word")[a].style.backgroundColor == "rgb(255, 255, 255)") {
-                    document.querySelectorAll(".quiz-word")[a].style.backgroundColor = "rgb(70, 70, 70)";
-                } else {
-                    document.querySelectorAll(".quiz-word")[a].style.backgroundColor = "rgb(255, 255, 255)";
+                return a;
+            }
+
+            function makeQuiz() {
+                var l = document.getElementById('hahaha').innerText.split('\n');
+                for (var i = 0; i < l.length / 2; i++) {
+                    var q = "";
+                    var g = l[i * 2].split(' ');
+                    var temp = shuffle(g);
+                    var t = "";
+                    for (var j = 0; j < temp.length; j++) {
+                        t += '<div class="quiz-word" onclick="wordClicked(' + i + ', ' + j + ')">' + temp[j] + '</div>\n/\n';
+                    }
+                    t = t.substring(0, t.length - 4);
+                    q += '<div class="quiz" id="q' + (i + 1) + '">\n<div class="quiz-content1">' + (i + 1) + '. ' + l[i * 2 + 1] + '</div>\n<div class="quiz-content2">\n(\n' + t + '\n<span>\n)</span>\n';
+                    q += '</div>\n<div class="quiz-answer">\n<input type="text" size="100" onChange="reactAns('+i+')">\n</div>\n<div class="isCorrect"></div>\n<div class="checkAns"></div>\n</div>';
+                    document.querySelectorAll('.content')[0].innerHTML += q;
                 }
             }
+
+            function wordClicked(a,b) {
+                if (document.querySelectorAll(".quiz")[a].querySelectorAll(".quiz-word")[b].style.backgroundColor == "rgb(70, 70, 70)") {
+                    document.querySelectorAll(".quiz")[a].querySelectorAll(".quiz-word")[b].style.backgroundColor = "rgba(0,0,0,0)";
+                } else {
+                    document.querySelectorAll(".quiz")[a].querySelectorAll(".quiz-word")[b].style.backgroundColor = "rgb(70, 70, 70)";
+                }
+            }
+
+            function ansClicked(a) {
+                var l = document.getElementById('hahaha').innerText.split('\n');
+                document.getElementsByClassName("checkAns")[a].innerText = l[a * 2];
+            }
+            
+            function reactAns(a) {
+                var l = document.getElementById('hahaha').innerText.split('\n');
+                if (l[a * 2] == document.getElementsByTagName("input")[a].value) {
+                    document.getElementsByClassName('isCorrect')[a].innerText = '정답입니다!!';
+                    document.getElementsByClassName('quiz')[a].style.backgroundColor = 'rgb(200,255,200)';
+                } else {
+                    document.getElementsByClassName('isCorrect')[a].innerText = '정답과 일치하지 않습니다!!';
+                    document.getElementsByClassName('quiz')[a].style.backgroundColor = 'rgb(255,200,200)';
+                    document.getElementsByClassName('isCorrect')[a].innerHTML += '<input type="button" value="정답 보기" style="margin-left: 20px;" onclick="ansClicked('+a+')">';
+                }
+            }
+
+
         </script>
     </head>
     <body>
@@ -80,20 +95,116 @@ myHeaders.append('Content-Type','text/plain; charset=UTF-8');
             <div class="title">
                 1과
             </div>
-            <div class="quiz" id="q1">
-                <div class="quiz-content1">
-                    1. blablabla...
-                </div>
-                <div class="quiz-content2">
-                    (
-                    <div class="quiz-word" onclick="wordClicked(0)">hello,</div>
-                    <div class="quiz-word" onclick="wordClicked(1)">world!</div>
-                    )
-                </div>
-                <div class=".quiz-answer">
-                    <input type="text" size="80">
-                </div>
-            </div>
+
         </div>
+        <pre id="hahaha" style="color: darkgray;">My Journal about those who inspire me
+내게 영감을 부여하는 사람들에 대한 나의 일지
+As a young person about to enter adulthood, I’ve been thinking a lot lately about what I want to do with my life and how I might do something meaningful with my time.
+성인기로 막 들어갈 젊은 사람으로서, 나는 최근에 내가 내 인생으로 무엇을 하길 원하는가와 내가 내 시간으로 의미 깊은 어떤 것을 할 수 있을 것인가를 많이 생각해왔다.
+I’ve come to the conclusion that the best way to find direction is to look at how others have steered the course of their lives and have accomplished great things.
+나는 방향을 찾는 가장 좋은 방법이 다른 사람들이 그들의 삶의 경로를 어떻게 이끌어왔는가와 위대한 일들을 어떻게 성취해왔는가를 보는 것이라는 결론에 이르렀다.
+I’m going to read as much as I can about inspirational people, and I’ll record my reflections here.
+나는 영감을 주는 사람들에 대해 가능한 한 많이 읽을 것이다, 그리고 나는 이곳에 내 감상을 기록할 것이다.
+Hopefully, the exercise will help me organize my thoughts and choose a specific path for myself.
+바라건대, 그 훈련이 내가 내 생각을 체계화하고 내 자신을 위한 특정한 길을 선택하는 것을 도울 것이다.
+"One Size Doesn’t Fit All"
+"한 사이즈가 모두에게 맞지는 않습니다."
+What will it be like when I get old?
+내가 나이가 들면 어떨까?
+Will getting around and doing things be difficult?
+돌아다니고 일들을 하는 것이 어려울까?
+The industrial designer Patricia Moore once asked herself these very questions as a young woman.
+산업 디자이너 패트리샤 무어가 한때 젊은 여성으로서 바로 이 질문들을 그녀 자신에게 물었다.
+When she was just 26 years old, Moore dressed like an 80-year-old woman and handicapped herself with weights and blurred glasses to find answers.
+그녀가 막 26세가 됐을 때, 무어는 정답을 찾기 위해 80세 여성처럼 차려입고 추와 흐릿한 안경으로 자신에게 핸디캡을 두었다.
+After traveling around North America like that for three years, she understood the difficulties the elderly face in our modern society and thus set to work designing products and services that would simplify life for our senior citizens.
+3년 동안 그와 같이 북아메리카를 여행한 후에, 그녀는 현대 사회에서 어르신들이 직면하는 어려움을 이해했고, 그래서 우리의 어르신들을 위해 삶을 간편하게 하는 상품과 서비스를 설계하는 일을 착수했다.
+I admire Moore in that she dedicated herself to a particular problem and really sacrificed in order to find a solution.
+나는 그녀가 특정한 문제에 헌신했고 해결책을 찾기 위해서 진정으로 희생했다는 점에서 무어를 존경한다.
+Would I do the same to help others in need?
+네가 어려움에 처한 다른 사람들을 돕기 위해 같은 일을 해야 할까?
+I certainly don’t want to get to the end of my life and say, “I wish I had done more to help people.”
+나는 분명히 내 삶의 마지막에 도착해서 “나는 내가 사람들을 돕기 위해 더 많이 했다면 좋았을 텐데.”라고 말하기를 원하지 않는다.
+Moore’s dedication has given me ideas about how I might be of service to others.
+무어의 헌신은 내게 어떻게 내가 다른 사람들에게 쓸모 있을 수 있을까에 대한 아이디어들을 주어왔다.
+"To Dare Is to Do, to Fear Is to Fail"
+"용기 내는 것은 하는 것이다, 두려워하는 것은 실패하는 것이다."
+I came across these words from a famed explorer John Goddard a few weeks ago.
+나는 몇 주 전에 저명한 탐험가 존 고더드로부터 이 말들을 우연히 발견했다.
+When he was just 15 years old, Goddard realized the importance of setting concrete life goals.
+그가 막 15세가 되었을 때, 고더드는 구체적인 삶의 목적들을 설정하는 것의 중요성을 깨달았다.
+So he wrote down 127 specific aims and, during his life, accomplished 109 of them.
+그래서 그는 127개의 구체적인 목표들을 적었고, 그의 일생동안, 그것들 중 109개를 성취했다.
+When asked about his motivation for writing this “Life List,” he said that all the adults he knew seemed to complain that they hadn’t accomplished things when they were younger.
+이 “생애 목록”을 쓰게 된 그의 동기에 대해 질문 받았을 때, 그는 그가 아는 모든 성인들이 그들이 더 젊었을 때 일들을 성취하지 못했던 것에 대해 불평하는 것처럼 보였다고 말했다.
+“They had let life slip by them,” he said.
+“그들은 삶이 그들 곁을 지나가도록 내버려두었다,”라고 그는 말했다.
+“I was sure that if I planned for my future, I could have a life of excitement, fun, and knowledge.”
+“나는 만약 내가 내 미래를 위해 계획을 세운다면, 나는 흥분, 재미, 그리고 지식의 삶을 가지게 될 거라고 확신했다.”
+So what are my life goals?
+그래서 내 삶의 목적들은 무엇인가?
+Are some of my goals more of a priority than others?
+내 목표들의 일부가 다른 것들보다 더 많은 우선순위에 있는가?
+There’s no question that I have a bunch of things I want to accomplish in life, but where do I even start?
+내가 삶에서 성취하길 원하는 많은 것들이 있다는 것은 의심의 여지가 없다, 하지만 내가 정말 어디서 시작할 것인가?
+Like Goddard, I need to be specific about goals, and I should write them down.
+고더드처럼, 나는 목표들에 대해 구체적일 필요가 있다, 그리고 나는 그것들을 적어야 한다.
+More importantly, I need to be brave enough to dare to do the things on my list, and this will certainly require me to leave my comfort zone.
+더 중요하게는, 나는 내 목록에 있는 것들을 감히 할 만큼 충분히 용기가 있을 필요가 있다, 그리고 이것은 분명히 내게 나의 안락지대를 떠나는 것을 요구할 것이다.
+Well, first things first.
+음, 중요한 것을 먼저 해야 한다.
+It’s time to write out my list.
+내 목록을 쓸 시간이다.
+First of all, I want to become a genetic engineer and develop tools and methods that might be used to treat rare diseases.
+무엇보다도, 나는 유전공학자가 되어서 희귀병을 치료하는 데 쓰일 지도 모르는 도구와 방법들을 개발하기를 원한다.
+I know the goal in and of itself is daunting and involves much effort and many complicated steps.
+나는 목표 그 자체는 벅차고 많은 노력과 많은 복잡한 절차들을 포함하고 있다는 것을 안다.
+I wish I had set the goal earlier, but I still have plenty of time to accomplish this.
+나는 내가 목표를 더 일찍 설정했다면 좋았을 것이다, 하지만 나는 여전히 이것을 성취할 많은 시간이 있다.
+Anyway, I’m glad that I came up with the very first goal on my life list.
+어쨌든, 나는 내 일생 목록에 그 첫 번째 목표가 떠올랐다는 것이 기쁘다.
+So what’s the next step?
+그래서 다음 단계는 무언인가?
+The most practical thing would be to think about successive objectives leading to the ultimate goal.
+가장 실용적인 것은 궁극적인 목표로 이어지는 연속적인 목표들에 대해 생각하는 것일 것이다.
+For example, I could study biology in university and then, during the summers, I could do a work-study program at a genetic research lab.
+예를 들면, 나는 대학에서 생물학을 공부할 수 있을 것이다, 그러고 나서, 여름 동안에, 체험 프로그램을 할 수 있을 것이다.
+By the time I finish that, I will have learned the basics of genetic engineering.
+내가 그것을 끝낼 때까지, 나는 유전 공학의 기초를 배우게 될 것이다.
+"Keeping Hope Alive"
+"희망을 살아있도록 유지하기"
+I believe that the luckiest people in the world owe a debt to those who are not so fortunate.
+나는 세상에서 가장 운이 좋은 사람들이 그렇게 운이 좋지 않은 사람들에게 빚졌다고 생각한다.
+By this, I mean that people like me, who are lucky enough to receive a good education, have loving parents, and live in a relatively safe country, ought to get out into the world and actively help the poor and the sick.
+이것으로, 나는 나와 같은, 훌륭한 교육을 받고 애정 깊은 부모를 갖고, 그리고 상대적으로 안전한 나라에 살 정도로 충분히 운이 좋은 사람들이 세상으로 나아가서 적극적으로 가난한 사람들과 아픈 사람들을 도와야 한다는 것을 의미한다.
+Dr. Hawa Abdi proved herself to be a woman of action when she passed up a life of luxury to help the ill and the dispossessed in her country.
+하와 아브디 박사는 그녀가 그녀의 나라의 아픈 사람들과 재산을 빼앗긴 사람들을 돕기 위해 사치스런 삶을 포기했을 때 자신이 행동하는 여성이라는 것을 증명했다.
+In 1983, when Somalia’s government collapsed, Abdi was running a successful medical clinic in her country’s capital, Mogadishu.
+1983년, 소말리아 정부가 붕괴했을 때, 아브디는 그녀의 나라의 수도인, 모가디슈에서 성공적인 진료소를 운영하고 있었다.
+She could have escaped and lived comfortably overseas, but she decided to stay and make a difference.
+그녀는 탈출하여 해외에서 편안하게 살 수 있었다, 하지만 그녀는 머물러서 변화를 가져오기로 결정했다.
+She established a hospital and refuge on her family’s land.
+그녀는 그녀의 가족의 땅에 병원이자 피난처를 설립했습니다.
+One day, rebels tried to take over her hospital, but “Mama Hawa” outstared the rebels.
+어느 날, 반란군이 그녀의 병원을 차지하기를 시도했다, 그러나 “엄마 하와”는 반란군들을 굴복하게 했다.
+Soon, they left in shame.
+곧, 그들은 부끄러워하며 떠났다.
+She picked herself up from this setback to continue healing, feeding, educating, and caring forher people.
+그녀는 그녀의 사람들을 치료하고, 먹이고, 가르치고, 그리고 돌보는 것을 계속하기 위해 이 역경으로부터 자신을 일으켜 세웠다.
+I am beginning an ambitious life journey.
+나는 야망적인 삶의 여행을 시작하고 있다.
+By the end, I will have experienced many setbacks and obstacles which will have helped me grow.
+끝날 때에, 나는 내가 자라는 것을 도와줄 많은 방해와 장애들을 경험해올 것이다.
+The lesson I should learn from Dr. Hawa’s story is that each obstacle must be met with courage and determination.
+하와 박사의 이야기로부터 내가 배워야할 교훈은 각각의 장애는 용기와 결단으로 맞서져야 한다는 것이다.
+There are people right here in my country, right now, who also need help.
+바로 지금, 바로 이곳 내 나라에서, 또한 도움이 필요한 사람들이 있다.
+I believe I have certain skills and abilities that are unique to me, and that can benefit society if I develop them further.
+나는 내가 내게 독특하고 만약 내가 그것들을 더 이상 발달시킨다면 사회를 이롭게 할 수 있는 어떤 기술과 능력을 가지고 있다고 믿는다.
+Through education, I need to refine these skills for the good of the maximum number of people.
+교육을 통하여, 나는 최대수의 사람들을 위해 이 기술들을 정련할 필요가 있다.
+This is the beginning of my life of service.
+이것이 내 봉사하는 삶의 시작이다.</pre>
+        <script>makeQuiz()</script>
     </body>
 </html>
